@@ -1,0 +1,11 @@
+{
+  "ref": "release/2.11.1",
+  "projects": [
+    {
+      "name": "repository-name",
+      "files": [
+        "path/to/file.py"
+      ]
+    }
+  ]
+}
