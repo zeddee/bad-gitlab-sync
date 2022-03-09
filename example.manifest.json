@@ -1,10 +1,22 @@
 {
-  "ref": "release/2.11.1",
+  "ref": "master",
   "projects": [
     {
-      "name": "repository-name",
+      "name": "docs-management",
+      "ref": "1-draft-km-policy",
       "files": [
-        "path/to/file.py"
+        {
+        "src": "README.rst",
+        "dest": "docs-management/readme.rst"
+      }
+      ]
+    },
+    {
+      "name": "new-ganges",
+      "files": [
+        {
+          "src": "site/basic-rules/README.md"
+        }
       ]
     }
   ]
