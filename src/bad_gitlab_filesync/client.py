@@ -5,7 +5,7 @@ from typing import Dict, List
 
 import gitlab
 
-from schemas.PullManifestSchema import PullManifest, PullManifestProject
+from .PullManifestSchema import PullManifest, PullManifestProject
 
 logging.basicConfig(level=logging.INFO)
 

@@ -4,12 +4,12 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from client import FileSyncClient
+from .client import FileSyncClient
 
 load_dotenv()
 
 
-if __name__ == "__main__":
+def main():
     GITLAB_ACCESS_TOKEN: str = environ.get("GITLAB_ACCESS_TOKEN", "")
     # Access token should at least
     # have ``read-api`` permissions.

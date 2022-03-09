@@ -33,7 +33,7 @@ setuptools.setup(
     ],
     entry_points={
         "console_scripts": [
-            "gitlab-filesync=bad-gitlab-filesync:main"
+            "gitlab-filesync=bad_gitlab_filesync.cli:main"
         ]
     }
 )
