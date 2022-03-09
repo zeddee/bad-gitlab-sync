@@ -90,4 +90,4 @@ class FileSyncClient:
         _manifest = PullManifest().dump(manifest)
 
         for project in _manifest["projects"]:
-            self._pull_files_from_project(project, _manifest["ref"])
+            self._pull_files_from_project(project, _manifest.get("ref", "master"))
