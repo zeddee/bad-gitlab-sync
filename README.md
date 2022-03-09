@@ -1,5 +1,11 @@
 # Bad GitLab Filesync
 
+Retrieve one or more files from
+a given repository using the GitLab files API.
+Useful when you want to pull a small subset of files
+from a repository without managing git submodules or
+similar.
+
 ## Install
 
 ```bash
