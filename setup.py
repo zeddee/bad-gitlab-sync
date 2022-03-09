@@ -31,4 +31,9 @@ setuptools.setup(
         "requests~=2.27",
         "marshmallow~=3.14",
     ],
+    entry_points={
+        "console_scripts": [
+            "gitlab-filesync=bad-gitlab-filesync:main"
+        ]
+    }
 )
