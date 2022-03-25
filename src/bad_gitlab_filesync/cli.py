@@ -15,7 +15,7 @@ def main():
     # have ``read-api`` permissions.
 
     GITLAB_URL: str = environ.get("GITLAB_URL", "https://www.gitlab.com")
-    MANIFEST_FILE: Path = environ.get(Path("MANIFEST_FILE"), Path("manifest.json"))
+    MANIFEST_FILE: Path = Path(environ.get("MANIFEST_FILE", "manifest.json"))
 
     client = FileSyncClient(
         gitlab_url=GITLAB_URL, gitlab_access_token=GITLAB_ACCESS_TOKEN
