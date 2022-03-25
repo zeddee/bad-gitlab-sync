@@ -55,6 +55,8 @@ class FileSyncClient:
             # then prefer this over the global 'ref'.
             ref = proj.get("ref")
 
+        proj_id = ""
+
         for _p in self._get_owned_projects():
             if proj["name"] in _p.keys():
                 proj_id = _p.get(proj["name"])
