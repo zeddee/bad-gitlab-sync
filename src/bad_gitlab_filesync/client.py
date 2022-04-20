@@ -19,6 +19,11 @@ class FileSyncClient:
         """Create a helper client object that
         acts as middleware that interacts with GitLab APIv4.
         """
+        assert(gitlab_access_token is not "" or None), "No gitlab access token set."
+        # Require authentication because we rely on
+        # GitLab.projects.list to retrieve a list
+        # of owned project, to which we find and match
+        # project names from manifest.json
         self.gl = gitlab.Gitlab(url=gitlab_url, private_token=gitlab_access_token)
 
     def _get_owned_projects(self) -> List[Dict[str, int]]:
