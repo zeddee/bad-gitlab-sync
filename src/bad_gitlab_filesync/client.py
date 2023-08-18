@@ -17,8 +17,8 @@ class FileSyncClient:
         gitlab_url: str = "https://gitlab.com",
         gitlab_access_token: str = "",
     ):
-        """Create a helper client object that
-        acts as middleware that interacts with GitLab APIv4.
+        """Create a client object
+        acting as middleware that interacts with GitLab APIv4.
         """
         self.SUMMARY = RunSummary()
         if gitlab_access_token == "" or None:
