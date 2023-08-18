@@ -8,7 +8,6 @@ from .client import FileSyncClient
 
 load_dotenv()
 
-
 def main():
     GITLAB_ACCESS_TOKEN: str = environ.get("GITLAB_ACCESS_TOKEN", "")
     # Access token should at least
@@ -23,3 +22,8 @@ def main():
 
     with MANIFEST_FILE.open("r") as fp:
         client.pull_from_manifest(json.loads(fp.read()))
+
+    # Print run summary
+    print(f"{(len(client.SUMMARY.__str__()) + 2) * '='}")
+    print(f"Run summary:\n {client.SUMMARY}")
+    print(f"{(len(client.SUMMARY.__str__()) + 2) * '='}")

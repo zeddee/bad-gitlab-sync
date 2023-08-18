@@ -6,6 +6,7 @@ from typing import Dict, List
 import gitlab
 
 from .PullManifestSchema import PullManifest, PullManifestProject
+from .RunSummary import RunSummary
 
 logging.basicConfig(level=logging.INFO)
 
@@ -16,15 +17,20 @@ class FileSyncClient:
         gitlab_url: str = "https://gitlab.com",
         gitlab_access_token: str = "",
     ):
-        """Create a helper client object that
-        acts as middleware that interacts with GitLab APIv4.
+        """Create a client object
+        acting as middleware that interacts with GitLab APIv4.
         """
-        assert(gitlab_access_token is not "" or None), "No gitlab access token set."
-        # Require authentication because we rely on
-        # GitLab.projects.list to retrieve a list
-        # of owned project, to which we find and match
-        # project names from manifest.json
+        self.SUMMARY = RunSummary()
+        if gitlab_access_token == "" or None:
+            # Require authentication because we rely on
+            # GitLab.projects.list to retrieve a list
+            # of owned project, to which we find and match
+            # project names from manifest.json
+            self.SUMMARY.error += 1
+            raise ValueError("Cannot find GitLab access token")
+
         self.gl = gitlab.Gitlab(url=gitlab_url, private_token=gitlab_access_token)
+        # Init RunSummary object. Used to count and present log level occurences at the end of a run.
 
     def _get_owned_projects(self) -> List[Dict[str, int]]:
         """
@@ -67,13 +73,24 @@ class FileSyncClient:
                 proj_id = _p.get(proj["name"])
 
         if proj_id is ("" or None):
-            raise KeyError(f"Uknown project: {proj['name']}")
+            self.SUMMARY.warnings += 1
+            logging.warning(f"Empty project name: {proj['name']}")
 
-        gl_proj = self.gl.projects.get(id=proj_id)
+        try:
+            gl_proj = self.gl.projects.get(id=proj_id)
+        except gitlab.exceptions.GitlabParsingError as e:
+            self.SUMMARY.errors += 1
+            logging.error("Cannot find project: {proj_id}")
+            raise e
 
         for file in proj["files"]:
             logging.info(f"Retrieving file {proj['name']}/{file['src']}@{ref}")
-            obj = gl_proj.files.get(file_path=file["src"], ref=ref)
+            try:
+                obj = gl_proj.files.get(file_path=file["src"], ref=ref)
+            except gitlab.exceptions.GitlabGetError as e:
+                self.SUMMARY.warnings += 1
+                logging.warning(f"Could not find {file['src']}: {e}")
+                continue
             content_b64: str = obj.content
 
             if file.get("dest"):
@@ -87,11 +104,12 @@ class FileSyncClient:
 
             dest.parent.mkdir(parents=True, exist_ok=True)
 
-            logging.info(f"Writing to {dest}")
             with dest.open("wb") as fp:
                 buffer = base64.b64decode(content_b64)
                 fp.write(buffer)
                 fp.close()
+                self.SUMMARY.success += 1
+                logging.info(f"Success: Written to {dest}")
 
     def pull_from_manifest(self, manifest: PullManifest):
         _manifest = PullManifest().dump(manifest)

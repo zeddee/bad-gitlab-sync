@@ -1,2 +1,5 @@
 manifest.json
 _synced/
+**/*.egg-info
+build/
+docs-management/
